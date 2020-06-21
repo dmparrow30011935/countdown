@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="./css/style.css">
+    <link rel="stylesheet" href="./css/stylemain.css">
+</head>
+<style>
+* {
+    margin:0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+
+#targetNumber{
+    grid-column: 4/6;
+    grid-row: 2;
+    
+}
+</style>
+<body>
+    
+<div class="wrapper" >
+    <div class="clock">
+        <div class="second">
+            <div class="sc" id="sc">
+
+            </div>
+        </div>
+    </div>
+    <div id="targetNumber"></div>
+    <button class="raise" id="big">Big</button>
+    <button class="raise" id="startBtn" >start</button>
+    <button class="raise" id="little">Little</button>
+    <a class="raise" href="./words.html">Words</a>
+    <div id="wrap" class="wrapper" ></div>
+</div>
+
+<script>
+
+    const deg = 6;
+    const sc = document.getElementById("sc");
+    const start = document.querySelector("#startBtn");
+    const sound = new Audio('./countdown.mp3');
+    const wrapper = document.getElementById("wrap");
+    const big = document.querySelector("#big");
+    const little = document.querySelector("#little");
+    const vowels = [25,50,75,100]
+    const consonants = [1,2,3,4,5,6,7,8,9];
+    var count = 0;
+
+
+    start.addEventListener("click",function(){
+        startClock();
+    });
+
+function startClock() {
+    sound.currentTime = 1;
+        sound.onplay = (event) => {
+            let ss = 0;
+            sc.style.transform = "rotateZ("+ss+"deg)";
+            let timer = setInterval(countdown,1000)
+            function countdown(){
+                ss += deg;
+                    sc.style.transform = "rotateZ("+ss+"deg)";
+                (ss == 30*deg )? clearInterval(timer): null;
+            }  
+        };
+        document.getElementById("targetNumber").append(addLetter(getRandomInt(2000),true));
+        sound.play()
+}
+
+
+function countedAddLetters(array){
+
+    (count >= 6)? remove():wrapper.append(addLetter(array));
+    count++;
+}
+
+
+function getRandomInt(max) {
+  let x = Math.floor(Math.random() * Math.floor(max));
+  console.log(x);
+  return (x>99)? x : getRandomInt(max);
+}
+
+
+addLetter = (array, hack=false) =>{
+ let div = document.createElement("div");
+ let p = document.createElement("p"); 
+ hack?
+    p.innerText = array
+    :
+    p.innerText = newLetter(array);
+ div.append(p);
+ div.setAttribute("class","pannelItem");
+ return div;
+
+}
+
+function remove(){
+    console.log("here");
+        big.disabled = true;
+     little.disabled = true;
+   
+     startClock();
+}
+
+/*newLetter = (size) => {
+let x = Math.floor(Math.random() * Math.floor(size));
+
+
+return (x != 0) ? x: newLetter(size);
+}*/
+
+newLetter = (array) => {
+let x = Math.floor(Math.random() * Math.floor(array.length));
+let letter = array[x];
+console.log(letter, x);
+return letter
+}
+
+    big.addEventListener("click",function(){countedAddLetters(vowels)});
+ little.addEventListener("click",function(){countedAddLetters(consonants)});
+
+</script>
+
+
+
+
+</body>
+</html>
