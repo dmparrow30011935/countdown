@@ -131,3 +131,18 @@ body{
 background-attachment: fixed;
 background-size: cover;
 }
+#plus,#minus{
+    width: 15px;
+}
+#time{
+    justify-self: center;
+    min-width: 105px;
+}
+.spinner{
+    position: relative;
+    bottom: -225px;
+    
+    display: flex;
+    justify-items: center;
+    align-items: center;
+}

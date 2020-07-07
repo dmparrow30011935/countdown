@@ -20,6 +20,7 @@
     grid-row: 2;
     
 }
+
 </style>
 <body>
     
@@ -30,7 +31,13 @@
 
             </div>
         </div>
+        <div class="spinner">
+            <button class="slide" id="minus">-</button>
+            <p class="time" id="time" value="30">30</p>
+            <button class="slide" id="plus" >+</button>
+        </div>
     </div>
+   
     <div id="targetNumber"></div>
     <button class="raise" id="big">Big</button>
     <button class="raise" id="startBtn" >start</button>
@@ -39,8 +46,11 @@
     <div id="wrap" class="wrapper" ></div>
 </div>
 
+<script type="module" src="./scripts/clock.js"></script>
 <script>
-
+    
+    const vowels = [25,50,75,100]
+    const consonants = [1,2,3,4,5,6,7,8,9];
     const deg = 6;
     const sc = document.getElementById("sc");
     const start = document.querySelector("#startBtn");
@@ -48,36 +58,115 @@
     const wrapper = document.getElementById("wrap");
     const big = document.querySelector("#big");
     const little = document.querySelector("#little");
-    const vowels = [25,50,75,100]
-    const consonants = [1,2,3,4,5,6,7,8,9];
+    const plus = document.querySelector("#plus");
+    const minus = document.querySelector("#minus");
+    const amountOfTime = document.querySelector("#time");
+
+    
     var count = 0;
 
 
-    start.addEventListener("click",function(){
-        startClock();
-    });
+    start.addEventListener("click",clockAnimation);
+    plus.addEventListener("click",plus30Seconds);
+    minus.addEventListener("click",minus30Seconds);
 
-function startClock() {
-    sound.currentTime = 1;
-        sound.onplay = (event) => {
-            let ss = 0;
+    function plus30Seconds(){
+        (parseInt(amountOfTime.innerText)!=120)? amountOfTime.innerText = parseInt(amountOfTime.innerText) + 30 : null;
+    }
+    function minus30Seconds(){
+        (parseInt(amountOfTime.innerText)!=30)? amountOfTime.innerText = parseInt(amountOfTime.innerText) - 30 : null;
+    }
+
+
+
+  
+
+    function clockAnimation() {
+
+        
+    if(count >= 6){
+        let time = parseInt(amountOfTime.innerText);
+        let timeLeft = time;
+
+
+        document.querySelector("#targetNumber").innerHTML="";
+
+        document.getElementById("targetNumber").append(addLetter(getRandomInt(2000),true));
+        disableAllButtons();
+        sound.currentTime = 2.5;
+        let ss = 0;
             sc.style.transform = "rotateZ("+ss+"deg)";
             let timer = setInterval(countdown,1000)
+            let clockCounter = 0
             function countdown(){
                 ss += deg;
-                    sc.style.transform = "rotateZ("+ss+"deg)";
-                (ss == 30*deg )? clearInterval(timer): null;
+                sc.style.transform = "rotateZ("+ss+"deg)";
+                amountOfTime.innerText = parseInt(amountOfTime.innerText) - 1
+                if((time-clockCounter) == 30 )
+                    sound.play().then(start.setAttribute("disabled",""));
+                else if(ss == time*deg)
+                   { 
+                    setTimeout(
+                        function(){
+                        sc.style.transform = "rotateZ(0deg)";
+                        start.removeEventListener("click",clockAnimation);
+                        start.innerText = "restart";
+                        start.addEventListener("click",restart);
+                        enableButton(start);
+                        amountOfTime.innerText = time;
+                        },3000
+                    );
+                    clearInterval(timer);
+                    }
+                else
+                 console.log(ss,time-clockCounter);
+                 clockCounter++;
             }  
-        };
-        document.getElementById("targetNumber").append(addLetter(getRandomInt(2000),true));
-        sound.play()
+        }else{
+            alert("Choose more numbers")
+        }
+    };
+
+
+function restart(){
+    count = 0;
+    document.querySelector("#targetNumber").innerHTML="";
+    wrapper.innerHTML="";
+    start.removeEventListener("click",restart);
+    start.innerText = "Start";
+    start.addEventListener("click",clockAnimation);
+    enableAllButtons();
+
+    
+}
+function disableAllButtons(){
+    let btnArray = document.querySelectorAll("button");
+    btnArray.forEach(btn => {
+        disableButton(btn);
+    });
+}
+function enableAllButtons(){
+    let btnArray = document.querySelectorAll("button");
+    btnArray.forEach(btn => {
+        enableButton(btn);
+    });
 }
 
 
+function disableButton(button){
+    button.setAttribute("disabled","");
+    button.setAttribute("class","disabled");
+}
+function enableButton(button){
+    button.removeAttribute("disabled","");
+    button.setAttribute("class","raise");
+}
+
 function countedAddLetters(array){
 
-    (count >= 6)? remove():wrapper.append(addLetter(array));
+    wrapper.append(addLetter(array));
     count++;
+    (count >= 6)? remove(): null;
 }
 
 
@@ -91,7 +180,7 @@ function getRandomInt(max) {
 addLetter = (array, hack=false) =>{
  let div = document.createElement("div");
  let p = document.createElement("p"); 
- hack?
+ hack? 
     p.innerText = array
     :
     p.innerText = newLetter(array);
@@ -103,10 +192,9 @@ addLetter = (array, hack=false) =>{
 
 function remove(){
     console.log("here");
-        big.disabled = true;
-     little.disabled = true;
-   
-     startClock();
+    disableButton(big);
+    disableButton(little);
+
 }
 
 /*newLetter = (size) => {

@@ -22,14 +22,19 @@
 </style>
 <body>
     
-<div class="wrapper" >
-    <div class="clock">
-        <div class="second">
-            <div class="sc" id="sc">
-
+    <div class="wrapper" >
+        <div class="clock">
+            <div class="second">
+                <div class="sc" id="sc">
+    
+                </div>
+            </div>
+            <div class="spinner">
+                <button class="slide" id="minus">-</button>
+                <p class="time" id="time" value="30">30</p>
+                <button class="slide" id="plus" >+</button>
             </div>
         </div>
-    </div>
     <button class="raise" id="big">Vowel</button>
     <button class="raise" id="startBtn">start</button>
     <button class="raise" id="little">Consonant</button>
@@ -38,7 +43,9 @@
 </div>
 
 <script>
-
+    const vowels = [ 'a','a','e', 'e','e', 'i','i' , 'o','o','u'];
+    const consonants = [ 'r','t','n','s','l','c','r','t','n','s','l','c','r','t','n','s','l','c','b','c','d','f','g','h','j','k','l','m','p','r','r','s','b', 'c', 'd' , 'f','g','h','j','k','l','y','m','p','r','r','s','t','v','b','c','d','f','g','h','j','k','l','m','p','q','r','s','t','v','w','x','y','z'];
+    
     const deg = 6;
     const sc = document.getElementById("sc");
     const start = document.querySelector("#startBtn");
@@ -46,30 +53,88 @@
     const wrapper = document.getElementById("wrap");
     const big = document.querySelector("#big");
     const little = document.querySelector("#little");
-    const vowels = [ 'a','a','a', 'e','e', 'i' , 'i' , 'o','o','u'];
-    const consonants = [ 'r','t','n','s','l','c','r','t','n','s','l','c','r','t','n','s','l','c','b', 'c', 'd' , 'f','g','h','j','k','l','m','p','q','r','s','b', 'c', 'd' , 'f','g','h','j','k','l','m','p','q','r','s','t','v','b','c','d','f','g','h','j','k','l','m','p','q','r','s','t','v','w','x','y','z'];
+    const plus = document.querySelector("#plus");
+    const minus = document.querySelector("#minus");
+    const amountOfTime = document.querySelector("#time");
+
+    
     var count = 0;
 
 
-    start.addEventListener("click",function(){
-        startClock();
-    });
+    start.addEventListener("click",clockAnimation);
+    plus.addEventListener("click",plus30Seconds);
+    minus.addEventListener("click",minus30Seconds);
 
-function startClock() {
-    sound.currentTime = 1;
-        sound.onplay = (event) => {
-            let ss = 0;
+    function plus30Seconds(){
+        (parseInt(amountOfTime.innerText)!=120)? amountOfTime.innerText = parseInt(amountOfTime.innerText) + 30 : null;
+    }
+    function minus30Seconds(){
+        (parseInt(amountOfTime.innerText)!=30)? amountOfTime.innerText = parseInt(amountOfTime.innerText) - 30 : null;
+    }
+
+
+
+  
+
+    function clockAnimation() {
+
+        
+    if(count >= 6){
+        let time = parseInt(amountOfTime.innerText);
+        
+       
+        disableAllButtons();
+        sound.currentTime = 2;
+        let ss = 0;
             sc.style.transform = "rotateZ("+ss+"deg)";
             let timer = setInterval(countdown,1000)
+            let clockCounter = 0
             function countdown(){
                 ss += deg;
                     sc.style.transform = "rotateZ("+ss+"deg)";
-                (ss == 30*deg )? clearInterval(timer): null;
+                if((time-clockCounter) == 30 )
+                    sound.play().then(start.setAttribute("disabled",""));
+                else if(ss == time*deg)
+                   { 
+                    setTimeout(
+                        function(){
+                        sc.style.transform = "rotateZ(0deg)";
+                        start.removeEventListener("click",clockAnimation);
+                        start.addEventListener("click",answers);
+                        enableButton(start);
+                        },3000
+                    );
+                    clearInterval(timer);
+                    }
+                else
+                 console.log(ss,time-clockCounter);
+                 clockCounter++;
             }  
-        };
-        sound.play()
+        }else{
+            alert("Choose more numbers")
+        }
+    };
+
+
+function answers(){
+    //location.reload();
+}
+function disableAllButtons(){
+    let btnArray = document.querySelectorAll("button");
+    btnArray.forEach(btn => {
+        disableButton(btn);
+    });
 }
 
+
+function disableButton(button){
+    button.setAttribute("disabled","");
+    button.setAttribute("class","disabled");
+}
+function enableButton(button){
+    button.removeAttribute("disabled","");
+    button.setAttribute("class","raise");
+}
 
 function countedAddLetters(array){
 
@@ -95,9 +160,9 @@ addLetter = (array) =>{
 
 function remove(){
     console.log("here");
-        big.disabled = true;
-     little.disabled = true;
-     startClock();
+    disableButton(big);
+    disableButton(little);
+     
 }
 
 newLetter = (array) => {

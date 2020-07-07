@@ -63,8 +63,8 @@
 }
 
 .fill {
-  --color: #a972cb;
-  --hover: #cb72aa;
+  --color: #e4cb58;
+  --hover: #94e458;
 }
 
 .pulse {
@@ -88,13 +88,18 @@
 }
 
 .slide {
-  --color: #8fc866;
-  --hover: #66c887;
+  --color: #e4cb58;
+  --hover: #94e458;
 }
 
 .offset {
-  --color: #19bc8b;
-  --hover: #1973bc;
+  --color: #e4cb58;
+  --hover: #94e458;
+}
+
+.disabled {
+  --color: #5d5d5d;
+  --hover: #5d5d5d;
 }
 
 button, a {
@@ -106,6 +111,12 @@ button, a {
 button:hover, button:focus, a:hover, a:focus {
   border-color: var(--hover);
   color: #fff;
+}
+
+.disabled {
+  color: var(--color);
+  -webkit-transition: 0.25s;
+  transition: 0.25s;
 }
 
 body {
@@ -127,7 +138,7 @@ body {
   display: flex;
 }
 
-button, a {
+button, a, .time {
   background: #17181c;
   border: 2px solid;
   font: inherit;

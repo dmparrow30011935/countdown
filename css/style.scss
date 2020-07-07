@@ -1,11 +1,13 @@
 
 // Animate the size, inside
+
 .fill:hover,
 .fill:focus {
   box-shadow: inset 0 0 0 2em var(--hover);
 }
 
 // Animate the size, outside
+ 
 .pulse:hover, 
 .pulse:focus {
   animation: pulse 1s;
@@ -61,13 +63,14 @@
 // If you wonder why use Sass vars or CSS custom properties...
   // Make a map with the class names and matching colors
 $colors: (
-  fill: #a972cb,
+  fill: #e4cb58,
   pulse: #ef6eae, 
   close: #ff7f82, 
   raise:  #e4cb58,
   up: #e4cb58, 
-  slide: #8fc866, 
-  offset: #19bc8b
+  slide: #e4cb58, 
+  offset: #e4cb58,
+  disabled: rgb(93, 93, 93)
 );
 
 // Sass variables compile to a static string; CSS variables are dynamic and inherited
@@ -90,7 +93,10 @@ button,a {
     color: #fff;
   }
 }
-
+.disabled {  
+  color: var(--color);
+  transition: 0.25s;
+}
 //=== Pen styling, ignore
 body {
   color: #fff;
@@ -107,7 +113,7 @@ body {
 }
 
 // Basic button styles
-button,a {
+button,a,.time {
   background:  hsl(227, 10%, 10%);
   border: 2px solid;
   font: inherit;
